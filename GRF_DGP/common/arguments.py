@@ -40,11 +40,11 @@ def get_common_args():
                         help='whether to use a local utility network for all agents, 1 means True, 0 means False')
     parser.add_argument('--local_q_L1loss', action='store_false', default=False)  # !!!!!!!!!!!!!!!!!!!!!
     parser.add_argument('--seed', type=int, default=1257)
-    parser.add_argument('--label', action='store_true', default='clip_intrinsic.5.5.06')  #
+    parser.add_argument('--label', action='store_true', default='.5.5.06')  #
     #parser.add_argument('--label', action='store_true', default='.05.5.002_green1_.3punish')  #
     #parser.add_argument('--label', action='store_true', default='.5.5.06_noid')
 
-    parser.add_argument('--intrinsic_clip', type=bool, default=True,
+    parser.add_argument('--intrinsic_clip', type=bool, default=False,
                         help='whether to clip intrinsic reward ')
     parser.add_argument('--add_id', type=bool, default=False,
                         help='whether to add id as observations')
