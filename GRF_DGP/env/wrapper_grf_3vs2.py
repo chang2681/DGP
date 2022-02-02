@@ -19,7 +19,7 @@ class GoogleFootballMultiAgentEnv(object):
         self.get_ball_rew=False
 
         self.env = football_env.create_environment(
-            env_name='academy_3_vs_1_with_keeper',
+            env_name='academy_3v2',
             stacked=False,
             representation="simple115",
             rewards='scoring',
