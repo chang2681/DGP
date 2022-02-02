@@ -367,11 +367,7 @@ class GRF_IBS_Diversity:
         torch.nn.utils.clip_grad_norm_(
             self.eval_parameters, self.args.grad_norm_clip)
         self.optimizer.step()
-        if random.random() < 0.005:
-            mask = mask.unsqueeze(-2)
-            self.writereward(self.csv_path, mask, self.args.beta1 * self.args.beta * intrinsic_1 * mask,
-                             self.args.beta2 * self.args.beta * intrinsic_2 * mask,
-                             r * mask[..., 0], masked_td_error, loss, t_env)
+
 
         if train_step > 0 and train_step % self.args.target_update_cycle == 0:
             self.target_rnn.load_state_dict(self.eval_rnn.state_dict())
@@ -568,30 +564,3 @@ class GRF_IBS_Diversity:
                 self.eval_hidden[i, j] = self.eval_rnn.init_hidden()
                 self.target_hidden[i, j] = self.target_rnn.init_hidden()
 
-    def writereward(self, path, mask, intrin_reward_1, intrin_reward_2, reward, td_error, loss, step):
-        mask_elems = mask.sum()
-        intrin_reward_mean_1 = intrin_reward_1.sum() / mask_elems
-        intrin_reward_sum_1 = intrin_reward_1.squeeze().sum(axis=-2).reshape(-1).mean()
-        intrin_reward_mean_2 = intrin_reward_2.sum() / mask_elems
-        intrin_reward_sum_2 = intrin_reward_2.squeeze().sum(axis=-2).reshape(-1).mean()
-        reward = reward.squeeze().sum(axis=-1).reshape(-1).mean()
-        if os.path.isfile(path):
-            with open(path, 'a+') as f:
-                csv_write = csv.writer(f)
-                csv_write.writerow(
-                    [step, intrin_reward_mean_1.item(), intrin_reward_sum_1.item(), intrin_reward_mean_2.item(),
-                     intrin_reward_sum_2.item(), reward.item(),
-                     reward.item() + intrin_reward_sum_1.item() + intrin_reward_sum_2.item(),
-                     td_error.mean().item(), loss.item()])
-
-        else:
-            with open(path, 'w') as f:
-                csv_write = csv.writer(f)
-                csv_write.writerow(
-                    ['step', 'intrinsic1_mean', 'intrinsic1_sum', 'intrinsic2_mean', 'intrinsic2_sum', 'reward', 'sum',
-                     'td_error', 'loss'])
-                csv_write.writerow(
-                    [step, intrin_reward_mean_1.item(), intrin_reward_sum_1.item(), intrin_reward_mean_2.item(),
-                     intrin_reward_sum_2.item(), reward.item(),
-                     reward.item() + intrin_reward_sum_1.item() + intrin_reward_sum_2.item(),
-                     td_error.mean().item(), loss.item()])
