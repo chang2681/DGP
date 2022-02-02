@@ -1,0 +1,2 @@
+sls代码: ac_input_base = torch.cat([s.permute(0, 2, 1, 3), obs_leader, Leader_addID],
+                                      dim=-1)
